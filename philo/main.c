@@ -6,11 +6,12 @@
 /*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/05/23 02:04:19 by seya             ###   ########.fr       */
+/*   Updated: 2023/05/28 03:18:10 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
 int	check_if_digit(char *str)
 {
 	int i;
@@ -91,7 +92,19 @@ int	init_philo(char **argv, t_main *main)
 		main->number_eat = 0;
 	return (1);
 }
-
+long int	get_time(t_main *s_main)
+{
+	long int 	end_time;
+	long int	actual_time;
+	
+	actual_time = 0;
+	end_time = 0;
+	gettimeofday(&(s_main->end), NULL);
+	end_time = (s_main->end.tv_sec * 1000 + s_main->end.tv_usec / 1000);
+	actual_time = (end_time - s_main->start_time);
+	//printf("Time taken to count to 10^5 is : %ld ms\n", (end_time - s_main->start_time));
+	return (actual_time);
+}
 int main(int argc, char **argv)
 {
 	t_main s_main;
@@ -105,6 +118,12 @@ int main(int argc, char **argv)
 	{
 		if (init_philo(argv, &s_main) == 0)
 			return (0);
-		printf("nb_philo = %d\ntime to die = %d\ntime to eat = %d\ntime_to_sleep = %d\nnumber of eat = %d\n", s_main.nb_philo, s_main.to_die, s_main.to_eat, s_main.to_sleep, s_main.number_eat);
+		gettimeofday(&(s_main.start), NULL);
+		s_main.start_time = (s_main.start.tv_sec * 1000 + s_main.start.tv_usec / 1000);
+		while(1)
+		{
+			printf("%ld\n",get_time(&s_main));
+		}
+		return 0;
 	}
 }
