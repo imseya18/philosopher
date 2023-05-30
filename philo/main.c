@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/05/28 03:18:10 by seya             ###   ########.fr       */
+/*   Updated: 2023/05/30 16:28:33 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,75 +14,39 @@
 
 int	check_if_digit(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	if(!str)
+	if (!str)
 		return (0);
-	while(str[i])
+	while (str[i])
 	{
-		if(str[i] < '0' || str[i] > '9')
+		if (str[i] < '0' || str[i] > '9')
 			return (0);
 		i++;
 	}
 	return (1);
 }
 
-static int	calcul(const char *str, int i, int k)
-{	
-	int	res;
-
-	res = 0;
-	while (str[i] >= 48 && str[i] <= 57)
-	{
-		res = res * 10 + (str[i] - '0');
-		i++;
-	}
-	if (k == 1)
-		res = -res;
-	return (res);
-}
-
-int	ft_atoi(const char *str)
+int	init_variable(char **argv, t_main *main)
 {
 	int	i;
-	int	k;
-	int	j;
 
 	i = 0;
-	k = 0;
-	j = 0;
-	while (str[i] == '\t' || str[i] == '\n' || str[i] == '\v' || str[i] == '\f'
-		|| str[i] == '\r' || str[i] == ' ')
-		i++;
-	while (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			k++;
-		if (str[i] == '+')
-			j++;
-		i++;
-	}
-	if (j > 1 || k > 1 || (k + j) > 1)
-		return (0);
-	return (calcul(str, i, k));
-}
-
-int	init_philo(char **argv, t_main *main)
-{
-	int i;
-
-	i = 1;
-	while(argv[i])
+	while (argv[++i])
 	{
 		if (check_if_digit(argv[i]) == 0)
 		{
 			printf("error one of the argument isn't a digit\n");
 			return (0);
 		}
-		i++;
 	}
 	main->nb_philo = atoi(argv[1]);
+	if (main->nb_philo < 1)
+	{
+		printf("error wrong number of philo\n");
+		return (0);
+	}
 	main->to_die = atoi(argv[2]);
 	main->to_eat = atoi(argv[3]);
 	main->to_sleep = atoi(argv[4]);
@@ -92,22 +56,57 @@ int	init_philo(char **argv, t_main *main)
 		main->number_eat = 0;
 	return (1);
 }
-long int	get_time(t_main *s_main)
+
+long int	get_time(t_main *s_main, int cases, int philo_nb)
 {
-	long int 	end_time;
+	long int	end_time;
 	long int	actual_time;
-	
+
 	actual_time = 0;
 	end_time = 0;
 	gettimeofday(&(s_main->end), NULL);
 	end_time = (s_main->end.tv_sec * 1000 + s_main->end.tv_usec / 1000);
 	actual_time = (end_time - s_main->start_time);
-	//printf("Time taken to count to 10^5 is : %ld ms\n", (end_time - s_main->start_time));
+	if (cases == 1)
+		printf("%ld %d has taken a fork\n", actual_time, philo_nb);
+	else if (cases == 2)
+		printf("%ld %d is eating\n", actual_time, philo_nb);
+	else if (cases == 3)
+		printf("%ld %d is sleeping\n", actual_time, philo_nb);
+	else if (cases == 4)
+		printf("%ld %d is thinking\n", actual_time, philo_nb);
+	else if (cases == 5)
+		printf("%ld %d died\n", actual_time, philo_nb);
 	return (actual_time);
 }
-int main(int argc, char **argv)
+void	*thread_routine(void *data)
 {
-	t_main s_main;
+	pthread_t tid;
+
+	// La fonction pthread_self() renvoie
+	// l'identifiant propre à ce thread.
+	tid = pthread_self();
+	printf("%sThread [%ld]: Le plus grand ennui c'est d'exister sans vivre.%s\n",
+		YELLOW, tid, NC);
+	return (NULL); // Le thread termine ici.
+}
+
+void	init_philo(pthread_t *philo, t_main	*main)
+{
+	int	i;
+
+	i = 0;
+	philo = malloc(main->nb_philo * sizeof(pthread_t));
+	while (i < main->nb_philo)
+	{
+		philo[i] = ;
+	}
+}
+
+int	main(int argc, char **argv)
+{
+	t_main		s_main;
+	pthread_t	*philo;
 
 	if (argc != 5 && argc != 6)
 	{
@@ -116,14 +115,16 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		if (init_philo(argv, &s_main) == 0)
+		if (init_variable(argv, &s_main) == 0)
 			return (0);
+		init_philo(philo, &main);
 		gettimeofday(&(s_main.start), NULL);
-		s_main.start_time = (s_main.start.tv_sec * 1000 + s_main.start.tv_usec / 1000);
-		while(1)
+		s_main.start_time = (s_main.start.tv_sec * 1000
+				+ s_main.start.tv_usec / 1000);
+		while (1)
 		{
-			printf("%ld\n",get_time(&s_main));
+			get_time(&s_main, 1, 3);
 		}
-		return 0;
+		return (0);
 	}
 }
