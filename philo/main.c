@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/05/30 16:28:33 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/05/30 16:51:12 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,17 +79,6 @@ long int	get_time(t_main *s_main, int cases, int philo_nb)
 		printf("%ld %d died\n", actual_time, philo_nb);
 	return (actual_time);
 }
-void	*thread_routine(void *data)
-{
-	pthread_t tid;
-
-	// La fonction pthread_self() renvoie
-	// l'identifiant propre à ce thread.
-	tid = pthread_self();
-	printf("%sThread [%ld]: Le plus grand ennui c'est d'exister sans vivre.%s\n",
-		YELLOW, tid, NC);
-	return (NULL); // Le thread termine ici.
-}
 
 void	init_philo(pthread_t *philo, t_main	*main)
 {
@@ -99,7 +88,8 @@ void	init_philo(pthread_t *philo, t_main	*main)
 	philo = malloc(main->nb_philo * sizeof(pthread_t));
 	while (i < main->nb_philo)
 	{
-		philo[i] = ;
+		pthread_create(&philo[i], NULL, thread_routine, NULL);
+		i++;
 	}
 }
 
@@ -108,6 +98,7 @@ int	main(int argc, char **argv)
 	t_main		s_main;
 	pthread_t	*philo;
 
+	philo = NULL;
 	if (argc != 5 && argc != 6)
 	{
 		printf("wrong number of arg \n");
@@ -117,14 +108,14 @@ int	main(int argc, char **argv)
 	{
 		if (init_variable(argv, &s_main) == 0)
 			return (0);
-		init_philo(philo, &main);
+		init_philo(philo, &s_main);
 		gettimeofday(&(s_main.start), NULL);
 		s_main.start_time = (s_main.start.tv_sec * 1000
 				+ s_main.start.tv_usec / 1000);
-		while (1)
-		{
-			get_time(&s_main, 1, 3);
-		}
+		//while (1)
+		//{
+		//	get_time(&s_main, 1, 3);
+		//}
 		return (0);
 	}
 }
