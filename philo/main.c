@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/05/30 16:51:12 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/05/31 18:04:47 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,23 +80,49 @@ long int	get_time(t_main *s_main, int cases, int philo_nb)
 	return (actual_time);
 }
 
-void	init_philo(pthread_t *philo, t_main	*main)
+
+void	*thread_routine(void *philippe)
+{
+	t_philo	*philo;
+	t_main *main;
+
+	philo = (t_philo *)philippe;
+	main = philo->main;
+		pthread_mutex_lock(&main->fork[0]);
+		main->test++;
+		printf("%d\n", main->test);
+		pthread_mutex_unlock(&main->fork[0]);
+	return (NULL);
+}
+
+void	init_philo(t_philo	*philo, t_main	*main)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	philo = malloc(main->nb_philo * sizeof(pthread_t));
-	while (i < main->nb_philo)
+	main->fork = malloc(main->nb_philo * sizeof(t_fork));
+	while(++i < main->nb_philo)
+		pthread_mutex_init(&main->fork[i], NULL);
+	i = -1;
+	main->test = 0;
+	while (++i < main->nb_philo)
 	{
-		pthread_create(&philo[i], NULL, thread_routine, NULL);
-		i++;
+		philo[i].philo_nb = i;
+		philo[i].main = main;
+		pthread_create(&philo[i].philo_th, NULL, thread_routine, &philo[i]);
+	}
+	i = -1;
+	while (++i < main->nb_philo)
+	{
+		pthread_join(philo[i].philo_th, NULL);
 	}
 }
 
 int	main(int argc, char **argv)
 {
-	t_main		s_main;
-	pthread_t	*philo;
+	t_philo		*philo;
+	t_main		main;
 
 	philo = NULL;
 	if (argc != 5 && argc != 6)
@@ -106,16 +132,13 @@ int	main(int argc, char **argv)
 	}
 	else
 	{
-		if (init_variable(argv, &s_main) == 0)
+		if (init_variable(argv, &main) == 0)
 			return (0);
-		init_philo(philo, &s_main);
-		gettimeofday(&(s_main.start), NULL);
-		s_main.start_time = (s_main.start.tv_sec * 1000
-				+ s_main.start.tv_usec / 1000);
-		//while (1)
-		//{
-		//	get_time(&s_main, 1, 3);
-		//}
+		main.actual_philo = main.nb_philo;
+		init_philo(philo, &main);
+		//gettimeofday(philo->main.start), NULL);
+		main.start_time = (main.start.tv_sec * 1000
+				+ main.start.tv_usec / 1000);
 		return (0);
 	}
 }

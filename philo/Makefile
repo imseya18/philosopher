@@ -6,7 +6,7 @@ SOURCES =   main.c\
 
 OBJECTS = $(SOURCES:.c=.o)
 
-FLAGS = -Wall -Wextra -Werror -pthread -pthread -g -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -pthread -g -fsanitize=thread
 
 CC = gcc $(FLAGS)
 
