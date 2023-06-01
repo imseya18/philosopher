@@ -1,7 +1,8 @@
 NAME = philo
 
 SOURCES =   main.c\
-			utils.c
+			utils.c\
+			time.c
 
 
 OBJECTS = $(SOURCES:.c=.o)

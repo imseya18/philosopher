@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/05/31 18:04:47 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/01 16:54:35 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,29 +57,71 @@ int	init_variable(char **argv, t_main *main)
 	return (1);
 }
 
-long int	get_time(t_main *s_main, int cases, int philo_nb)
+long int	get_time_print_action(t_main *s_main, int cases, int philo_nb)
 {
 	long int	end_time;
 	long int	actual_time;
 
 	actual_time = 0;
 	end_time = 0;
+	pthread_mutex_lock(&s_main->to_print);
 	gettimeofday(&(s_main->end), NULL);
 	end_time = (s_main->end.tv_sec * 1000 + s_main->end.tv_usec / 1000);
 	actual_time = (end_time - s_main->start_time);
 	if (cases == 1)
-		printf("%ld %d has taken a fork\n", actual_time, philo_nb);
+		printf("%ld %d has taken a fork\n", actual_time, (philo_nb + 1));
 	else if (cases == 2)
-		printf("%ld %d is eating\n", actual_time, philo_nb);
+		printf("%ld %d is eating\n", actual_time, (philo_nb + 1));
 	else if (cases == 3)
-		printf("%ld %d is sleeping\n", actual_time, philo_nb);
+		printf("%ld %d is sleeping\n", actual_time, (philo_nb + 1));
 	else if (cases == 4)
-		printf("%ld %d is thinking\n", actual_time, philo_nb);
+		printf("%ld %d is thinking\n", actual_time, (philo_nb + 1));
 	else if (cases == 5)
-		printf("%ld %d died\n", actual_time, philo_nb);
+		printf("%ld %d died\n", actual_time, (philo_nb + 1));
+	pthread_mutex_unlock(&s_main->to_print);
 	return (actual_time);
 }
 
+int	check_if_alive(t_philo	*philo)
+{
+
+	if(philo->alive == 0)
+		return (1);
+	return (0);
+}
+
+void	philo_eating(t_philo *philo, t_main *main)
+{
+	if (philo->philo_nb == 0)
+	{
+		pthread_mutex_lock(&main->fork[main->nb_philo - 1]);
+		get_time_print_action(main, 1, philo->philo_nb);
+		pthread_mutex_lock(&main->fork[philo->philo_nb]);
+		get_time_print_action(main, 1, philo->philo_nb);
+		get_time_print_action(main, 2, philo->philo_nb);
+		ft_usleep(main->to_eat);
+		pthread_mutex_unlock(&main->fork[main->nb_philo - 1]);
+		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
+	}
+	else
+	{
+		pthread_mutex_lock(&main->fork[(philo->philo_nb - 1)]);
+		get_time_print_action(main, 1, philo->philo_nb);
+		pthread_mutex_lock(&main->fork[philo->philo_nb]);
+		get_time_print_action(main, 1, philo->philo_nb);
+		get_time_print_action(main, 2, philo->philo_nb);
+		ft_usleep(main->to_eat);
+		pthread_mutex_unlock(&main->fork[(philo->philo_nb - 1)]);
+		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
+	}
+}
+
+void	philo_sleep_think(t_philo *philo, t_main *main)
+{
+	get_time_print_action(main, 3, philo->philo_nb);
+	ft_usleep(main->to_sleep);
+	get_time_print_action(main, 4, philo->philo_nb);
+}
 
 void	*thread_routine(void *philippe)
 {
@@ -88,10 +130,11 @@ void	*thread_routine(void *philippe)
 
 	philo = (t_philo *)philippe;
 	main = philo->main;
-		pthread_mutex_lock(&main->fork[0]);
-		main->test++;
-		printf("%d\n", main->test);
-		pthread_mutex_unlock(&main->fork[0]);
+	while(check_if_alive(philo) == 0)
+	{
+		philo_eating(philo, main);
+		philo_sleep_think(philo, main);
+	}
 	return (NULL);
 }
 
@@ -102,21 +145,21 @@ void	init_philo(t_philo	*philo, t_main	*main)
 	i = -1;
 	philo = malloc(main->nb_philo * sizeof(pthread_t));
 	main->fork = malloc(main->nb_philo * sizeof(t_fork));
+	pthread_mutex_init(&main->to_print, NULL);
+	pthread_mutex_init(&main->check_alive, NULL);
 	while(++i < main->nb_philo)
 		pthread_mutex_init(&main->fork[i], NULL);
 	i = -1;
-	main->test = 0;
 	while (++i < main->nb_philo)
 	{
 		philo[i].philo_nb = i;
 		philo[i].main = main;
+		philo[i].alive = 1;
 		pthread_create(&philo[i].philo_th, NULL, thread_routine, &philo[i]);
 	}
 	i = -1;
 	while (++i < main->nb_philo)
-	{
 		pthread_join(philo[i].philo_th, NULL);
-	}
 }
 
 int	main(int argc, char **argv)
@@ -134,11 +177,10 @@ int	main(int argc, char **argv)
 	{
 		if (init_variable(argv, &main) == 0)
 			return (0);
-		main.actual_philo = main.nb_philo;
-		init_philo(philo, &main);
-		//gettimeofday(philo->main.start), NULL);
+		gettimeofday(&(main.start), NULL);
 		main.start_time = (main.start.tv_sec * 1000
 				+ main.start.tv_usec / 1000);
+		init_philo(philo, &main);
 		return (0);
 	}
 }
