@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/01 16:54:35 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/05 17:13:06 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	init_variable(char **argv, t_main *main)
 	if (argv[5])
 		main->number_eat = atoi(argv[5]);
 	else
-		main->number_eat = 0;
+		main->number_eat = -1;
 	return (1);
 }
 
@@ -82,13 +82,12 @@ long int	get_time_print_action(t_main *s_main, int cases, int philo_nb)
 	return (actual_time);
 }
 
-int	check_if_alive(t_philo	*philo)
-{
-
-	if(philo->alive == 0)
-		return (1);
-	return (0);
-}
+//int	check_if_alive(t_philo	*philo)
+//{
+//	if(philo->alive == 0)
+//		return (1);
+//	return (0);
+//}
 
 void	philo_eating(t_philo *philo, t_main *main)
 {
@@ -130,8 +129,9 @@ void	*thread_routine(void *philippe)
 
 	philo = (t_philo *)philippe;
 	main = philo->main;
-	while(check_if_alive(philo) == 0)
+	while(main->stop == 0)
 	{
+		if(main->number_eat != -1 && )
 		philo_eating(philo, main);
 		philo_sleep_think(philo, main);
 	}
@@ -154,7 +154,8 @@ void	init_philo(t_philo	*philo, t_main	*main)
 	{
 		philo[i].philo_nb = i;
 		philo[i].main = main;
-		philo[i].alive = 1;
+		philo[i].last_time_eat = 0;
+		philo[i].eat_number = 0;
 		pthread_create(&philo[i].philo_th, NULL, thread_routine, &philo[i]);
 	}
 	i = -1;
@@ -177,6 +178,7 @@ int	main(int argc, char **argv)
 	{
 		if (init_variable(argv, &main) == 0)
 			return (0);
+		main.stop = 0;
 		gettimeofday(&(main.start), NULL);
 		main.start_time = (main.start.tv_sec * 1000
 				+ main.start.tv_usec / 1000);

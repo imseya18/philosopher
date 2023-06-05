@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/01 16:54:39 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/05 17:13:07 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@
 
 typedef struct s_philo
 {
-	int				alive;
 	int				philo_nb;
+	long int		last_time_eat;
+	int				eat_number;
 	pthread_t		philo_th;
 	struct	s_main	*main;
 }	t_philo;
@@ -39,6 +40,7 @@ typedef struct s_main
 	int				to_die;
 	int				to_eat;
 	int				to_sleep;
+	int				stop;
 	int				number_eat;
 	long int		start_time;
 	pthread_mutex_t	to_print;
