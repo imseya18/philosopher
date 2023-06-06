@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 15:35:39 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 15:37:35 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,15 @@ int	init_variable(char **argv, t_main *main)
 	return (1);
 }
 
-int check_number_eat(t_main *main)
+int	check_number_eat(t_main *main)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	while(i < main->nb_philo)
+	while (i < main->nb_philo)
 	{
 		pthread_mutex_lock(&main->check_time_eat);
-		if(main->philo[i].eat_number < main->number_eat)
+		if (main->philo[i].eat_number < main->number_eat)
 		{
 			pthread_mutex_unlock(&main->check_time_eat);
 			return (0);
@@ -59,23 +59,6 @@ int check_number_eat(t_main *main)
 	}
 	return (1);
 }
-
-//oid	*thread_routine(void *philippe)
-//
-//	t_philo	*philo;
-//	t_main *main;
-//
-//	philo = (t_philo *)philippe;
-//	main = philo->main;
-//	while(main->stop == 0)
-//	{
-//		if(main->number_eat != -1 && check_number_eat(main) == 1)
-//			break ;
-//		philo_eating(philo, main);
-//		philo_sleep_think(philo, main);
-//	}
-//	return (NULL);
-//
 
 void	init_philo(t_main	*main)
 {
@@ -87,7 +70,7 @@ void	init_philo(t_main	*main)
 	pthread_mutex_init(&main->to_print, NULL);
 	pthread_mutex_init(&main->check_alive, NULL);
 	pthread_mutex_init(&main->check_time_eat, NULL);
-	while(++i < main->nb_philo)
+	while (++i < main->nb_philo)
 		pthread_mutex_init(&main->fork[i], NULL);
 	i = -1;
 	while (++i < main->nb_philo)
@@ -96,7 +79,8 @@ void	init_philo(t_main	*main)
 		main->philo[i].main = main;
 		main->philo[i].last_time_eat = 0;
 		main->philo[i].eat_number = 0;
-		pthread_create(&main->philo[i].philo_th, NULL, thread_routine, &main->philo[i]);
+		pthread_create(&main->philo[i].philo_th, NULL, thread_routine,
+			&main->philo[i]);
 	}
 	i = -1;
 	while (++i < main->nb_philo)

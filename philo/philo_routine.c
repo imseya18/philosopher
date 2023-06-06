@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/06 15:35:46 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 15:37:54 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 void	*thread_routine(void *philippe)
 {
 	t_philo	*philo;
-	t_main *main;
+	t_main	*main;
 
 	philo = (t_philo *)philippe;
 	main = philo->main;
-	while(main->stop == 0)
+	while (main->stop == 0)
 	{
-		if(main->number_eat != -1 && check_number_eat(main) == 1)
+		if (main->number_eat != -1 && check_number_eat(main) == 1)
 			break ;
 		philo_eating(philo, main);
 		philo_sleep_think(philo, main);
@@ -70,4 +70,3 @@ void	philo_eating(t_philo *philo, t_main *main)
 		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
 	}
 }
-
