@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 15:37:35 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 16:25:41 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	check_number_eat(t_main *main)
 		pthread_mutex_unlock(&main->check_time_eat);
 		i++;
 	}
+	main->stop = 1;
 	return (1);
 }
 
