@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 03:09:47 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/06 14:43:52 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,20 +131,20 @@ void	*thread_routine(void *philippe)
 	main = philo->main;
 	while(main->stop == 0)
 	{
-		//if(main->number_eat != -1 && )
+		////if(main->number_eat != -1 && )
 		philo_eating(philo, main);
 		philo_sleep_think(philo, main);
 	}
 	return (NULL);
 }
 
-void	init_philo(t_philo	*philo, t_main	*main)
+void	init_philo(t_main	*main)
 {
 	int	i;
 
 	i = -1;
-	philo = malloc(main->nb_philo * sizeof(pthread_t));
-	main->fork = malloc(main->nb_philo * sizeof(t_fork));
+	main->philo = malloc(main->nb_philo * sizeof(pthread_t));
+	main->fork = malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&main->to_print, NULL);
 	pthread_mutex_init(&main->check_alive, NULL);
 	while(++i < main->nb_philo)
@@ -152,23 +152,23 @@ void	init_philo(t_philo	*philo, t_main	*main)
 	i = -1;
 	while (++i < main->nb_philo)
 	{
-		philo[i].philo_nb = i;
-		philo[i].main = main;
-		philo[i].last_time_eat = 0;
-		philo[i].eat_number = 0;
-		pthread_create(&philo[i].philo_th, NULL, thread_routine, &philo[i]);
+		main->philo[i].philo_nb = i;
+		main->philo[i].main = main;
+		main->philo[i].last_time_eat = 0;
+		main->philo[i].eat_number = 0;
+		pthread_create(&main->philo[i].philo_th, NULL, thread_routine, &main->philo[i]);
 	}
 	i = -1;
 	while (++i < main->nb_philo)
-		pthread_join(philo[i].philo_th, NULL);
+		pthread_join(main->philo[i].philo_th, NULL);
 }
 
 int	main(int argc, char **argv)
 {
-	t_philo		*philo;
+	//t_philo		*philo;
 	t_main		main;
 
-	philo = NULL;
+	main.philo = NULL;
 	if (argc != 5 && argc != 6)
 	{
 		printf("wrong number of arg \n");
@@ -182,7 +182,7 @@ int	main(int argc, char **argv)
 		gettimeofday(&(main.start), NULL);
 		main.start_time = (main.start.tv_sec * 1000
 				+ main.start.tv_usec / 1000);
-		init_philo(philo, &main);
+		init_philo(&main);
 		return (0);
 	}
 }

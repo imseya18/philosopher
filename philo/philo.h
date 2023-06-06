@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 03:08:44 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/06 14:44:37 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ typedef struct s_philo
 }	t_philo;
 
 
-typedef	struct s_fork
-{
-	pthread_mutex_t	fork_mutex;
-}	t_fork;
+//typedef	struct s_fork
+//{
+//	pthread_mutex_t	fork_mutex;
+//}	t_fork;
 
 typedef struct s_main
 {
@@ -46,6 +46,7 @@ typedef struct s_main
 	pthread_mutex_t	to_print;
 	pthread_mutex_t	check_alive;
 	pthread_mutex_t	*fork;
+	struct s_philo  *philo;
 	struct timeval	start;
 	struct timeval	end;
 }	t_main;
@@ -53,7 +54,7 @@ typedef struct s_main
 int			init_variable(char **argv, t_main *main);
 int			ft_atoi(const char *str);
 int			check_if_digit(char *str);
-void		init_philo(t_philo *philo, t_main	*main);
+void		init_philo(t_main	*main);
 void		*thread_routine(void *philippe);
 void		philo_sleep_think(t_philo *philo, t_main *main);
 void		philo_eating(t_philo *philo, t_main *main);
