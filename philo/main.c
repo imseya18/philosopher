@@ -6,27 +6,11 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 14:43:52 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 15:35:39 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	check_if_digit(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 int	init_variable(char **argv, t_main *main)
 {
@@ -57,86 +41,41 @@ int	init_variable(char **argv, t_main *main)
 	return (1);
 }
 
-long int	get_time_print_action(t_main *s_main, int cases, int philo_nb, int fork_number)
+int check_number_eat(t_main *main)
 {
-	long int	end_time;
-	long int	actual_time;
+	int i;
 
-	actual_time = 0;
-	end_time = 0;
-	pthread_mutex_lock(&s_main->to_print);
-	gettimeofday(&(s_main->end), NULL);
-	end_time = (s_main->end.tv_sec * 1000 + s_main->end.tv_usec / 1000);
-	actual_time = (end_time - s_main->start_time);
-	if (cases == 1)
-		printf("%ld %d has taken a fork %d\n", actual_time, (philo_nb + 1), (fork_number + 1));
-	else if (cases == 2)
-		printf("%ld %d is eating\n", actual_time, (philo_nb + 1));
-	else if (cases == 3)
-		printf("%ld %d is sleeping\n", actual_time, (philo_nb + 1));
-	else if (cases == 4)
-		printf("%ld %d is thinking\n", actual_time, (philo_nb + 1));
-	else if (cases == 5)
-		printf("%ld %d died\n", actual_time, (philo_nb + 1));
-	pthread_mutex_unlock(&s_main->to_print);
-	return (actual_time);
-}
-
-//int	check_if_alive(t_philo	*philo)
-//{
-//	if(philo->alive == 0)
-//		return (1);
-//	return (0);
-//}
-
-void	philo_eating(t_philo *philo, t_main *main)
-{
-	if (philo->philo_nb == 0)
+	i = 0;
+	while(i < main->nb_philo)
 	{
-		pthread_mutex_lock(&main->fork[main->nb_philo - 1]);
-		get_time_print_action(main, 1, philo->philo_nb, main->nb_philo - 1);
-		pthread_mutex_lock(&main->fork[philo->philo_nb]);
-		get_time_print_action(main, 1, philo->philo_nb, philo->philo_nb);
-		get_time_print_action(main, 2, philo->philo_nb, 0);
-		ft_usleep(main->to_eat);
-		pthread_mutex_unlock(&main->fork[main->nb_philo - 1]);
-		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
+		pthread_mutex_lock(&main->check_time_eat);
+		if(main->philo[i].eat_number < main->number_eat)
+		{
+			pthread_mutex_unlock(&main->check_time_eat);
+			return (0);
+		}
+		pthread_mutex_unlock(&main->check_time_eat);
+		i++;
 	}
-	else
-	{
-		pthread_mutex_lock(&main->fork[(philo->philo_nb - 1)]);
-		get_time_print_action(main, 1, philo->philo_nb, philo->philo_nb - 1);
-		pthread_mutex_lock(&main->fork[philo->philo_nb]);
-		get_time_print_action(main, 1, philo->philo_nb, philo->philo_nb);
-		get_time_print_action(main, 2, philo->philo_nb, 0);
-		ft_usleep(main->to_eat);
-		pthread_mutex_unlock(&main->fork[(philo->philo_nb - 1)]);
-		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
-	}
+	return (1);
 }
 
-void	philo_sleep_think(t_philo *philo, t_main *main)
-{
-	get_time_print_action(main, 3, philo->philo_nb, 0);
-	ft_usleep(main->to_sleep);
-	get_time_print_action(main, 4, philo->philo_nb, 0);
-}
-
-void	*thread_routine(void *philippe)
-{
-	t_philo	*philo;
-	t_main *main;
-
-	philo = (t_philo *)philippe;
-	main = philo->main;
-	while(main->stop == 0)
-	{
-		////if(main->number_eat != -1 && )
-		philo_eating(philo, main);
-		philo_sleep_think(philo, main);
-	}
-	return (NULL);
-}
+//oid	*thread_routine(void *philippe)
+//
+//	t_philo	*philo;
+//	t_main *main;
+//
+//	philo = (t_philo *)philippe;
+//	main = philo->main;
+//	while(main->stop == 0)
+//	{
+//		if(main->number_eat != -1 && check_number_eat(main) == 1)
+//			break ;
+//		philo_eating(philo, main);
+//		philo_sleep_think(philo, main);
+//	}
+//	return (NULL);
+//
 
 void	init_philo(t_main	*main)
 {
@@ -147,6 +86,7 @@ void	init_philo(t_main	*main)
 	main->fork = malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&main->to_print, NULL);
 	pthread_mutex_init(&main->check_alive, NULL);
+	pthread_mutex_init(&main->check_time_eat, NULL);
 	while(++i < main->nb_philo)
 		pthread_mutex_init(&main->fork[i], NULL);
 	i = -1;
@@ -165,7 +105,6 @@ void	init_philo(t_main	*main)
 
 int	main(int argc, char **argv)
 {
-	//t_philo		*philo;
 	t_main		main;
 
 	main.philo = NULL;

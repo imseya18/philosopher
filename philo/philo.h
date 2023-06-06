@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 14:44:37 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 15:35:50 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,6 @@ typedef struct s_philo
 	struct	s_main	*main;
 }	t_philo;
 
-
-//typedef	struct s_fork
-//{
-//	pthread_mutex_t	fork_mutex;
-//}	t_fork;
-
 typedef struct s_main
 {
 	int				nb_philo;
@@ -43,6 +37,7 @@ typedef struct s_main
 	int				stop;
 	int				number_eat;
 	long int		start_time;
+	pthread_mutex_t	check_time_eat;
 	pthread_mutex_t	to_print;
 	pthread_mutex_t	check_alive;
 	pthread_mutex_t	*fork;
@@ -58,8 +53,9 @@ void		init_philo(t_main	*main);
 void		*thread_routine(void *philippe);
 void		philo_sleep_think(t_philo *philo, t_main *main);
 void		philo_eating(t_philo *philo, t_main *main);
+int 		check_number_eat(t_main *main);
 //	TIME
-long int	get_time_print_action(t_main *s_main, int cases, int philo_nb, int fork_number);
+long int		get_time_print_action(t_main *s_main, int cases, int philo_nb, int fork_number);
 unsigned int 	time_for_usleep();
 void 			ft_usleep(int end_time);
 

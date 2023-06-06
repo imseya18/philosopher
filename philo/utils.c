@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 14:15:19 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/01 16:54:37 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/06 15:35:52 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,20 @@ int	ft_atoi(const char *str)
 	if (j > 1 || k > 1 || (k + j) > 1)
 		return (0);
 	return (calcul(str, i, k));
+}
+
+int	check_if_digit(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
 }
