@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/06 16:25:41 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/08 00:10:53 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,9 @@ int	check_number_eat(t_main *main)
 		pthread_mutex_unlock(&main->check_time_eat);
 		i++;
 	}
+	pthread_mutex_lock(&main->alive);
 	main->stop = 1;
+	pthread_mutex_unlock(&main->alive);
 	return (1);
 }
 
@@ -69,7 +71,7 @@ void	init_philo(t_main	*main)
 	main->philo = malloc(main->nb_philo * sizeof(pthread_t));
 	main->fork = malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&main->to_print, NULL);
-	pthread_mutex_init(&main->check_alive, NULL);
+	pthread_mutex_init(&main->alive, NULL);
 	pthread_mutex_init(&main->check_time_eat, NULL);
 	while (++i < main->nb_philo)
 		pthread_mutex_init(&main->fork[i], NULL);
