@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/08 00:10:53 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/08 16:57:27 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,18 @@ int	check_number_eat(t_main *main)
 	return (1);
 }
 
+void	ft_destructor(t_main *main)
+{
+	int	i;
+
+	i = -1;
+	while (++i < main->nb_philo)
+		pthread_mutex_destroy(&main->fork[i]);
+	pthread_mutex_destroy(&main->to_print);
+	pthread_mutex_destroy(&main->alive);
+	pthread_mutex_destroy(&main->check_time_eat);
+}
+
 void	init_philo(t_main	*main)
 {
 	int	i;
@@ -88,6 +100,7 @@ void	init_philo(t_main	*main)
 	i = -1;
 	while (++i < main->nb_philo)
 		pthread_join(main->philo[i].philo_th, NULL);
+	ft_destructor(main);
 }
 
 int	main(int argc, char **argv)

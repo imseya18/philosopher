@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/08 00:10:43 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/08 16:57:15 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_main
 	int				stop;
 	int				number_eat;
 	long int		start_time;
+	long int		actual_time;
 	pthread_mutex_t	check_time_eat;
 	pthread_mutex_t	to_print;
 	pthread_mutex_t	alive;
@@ -54,8 +55,11 @@ void				*thread_routine(void *philippe);
 void				philo_sleep_think(t_philo *philo, t_main *main);
 void				philo_eating(t_philo *philo, t_main *main);
 int					check_number_eat(t_main *main);
+int					check_if_dead(t_main *main);
 //	TIME
-long int			get_time_print_action(t_main *main, int cases, int philo_nb, int eat_number,int fork_number);
+void				ft_print_case(t_main *main, int cases, int eat_number, int philo_nb, int fork_number);
+void				ft_print_case_two(t_main *main, int cases, int philo_nb, int fork_number);
+void				get_time_print_action(t_main *main, int cases, t_philo *philo, int fork_number);
 unsigned int		time_for_usleep(void);
 void				ft_usleep(int action_time, int eat, t_philo *philo);
 #endif
