@@ -6,12 +6,11 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/08 16:57:12 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/08 18:42:33 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
 
 void	*thread_routine(void *philippe)
 {
@@ -25,11 +24,35 @@ void	*thread_routine(void *philippe)
 		usleep(100);
 	while (check_if_dead(main) != 1)
 	{
-		pthread_create(&dead_or_not, NULL, thread_routine)
+		pthread_create(&dead_or_not, NULL, dead_routine, philo);
 		philo_eating(philo, main);
 		if (check_if_dead(main) == 1)
+		{
+			pthread_detach(dead_or_not);
 			break ;
+		}
 		philo_sleep_think(philo, main);
+		pthread_detach(dead_or_not);
+	}
+	return (NULL);
+}
+
+void	*dead_routine(void	*philippe)
+{
+	t_philo			*philo;
+	unsigned int	time;
+
+	philo = (t_philo *)philippe;
+	ft_usleep(philo->main->to_die, 0, NULL);
+	pthread_mutex_lock(&philo->main->clone_time);
+	time = philo->last_time_eat;
+	pthread_mutex_unlock(&philo->main->clone_time);
+	if (time_for_usleep() - time >= (unsigned int)philo->main->to_die)
+	{
+		get_time_print_action(philo->main, 5, philo, 0);
+		pthread_mutex_lock(&philo->main->alive);
+		philo->main->stop = 1;
+		pthread_mutex_unlock(&philo->main->alive);
 	}
 	return (NULL);
 }

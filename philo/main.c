@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/08 16:57:27 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/08 18:42:34 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	ft_destructor(t_main *main)
 	pthread_mutex_destroy(&main->to_print);
 	pthread_mutex_destroy(&main->alive);
 	pthread_mutex_destroy(&main->check_time_eat);
+	pthread_mutex_destroy(&main->clone_time);
 }
 
 void	init_philo(t_main	*main)
@@ -85,6 +86,7 @@ void	init_philo(t_main	*main)
 	pthread_mutex_init(&main->to_print, NULL);
 	pthread_mutex_init(&main->alive, NULL);
 	pthread_mutex_init(&main->check_time_eat, NULL);
+	pthread_mutex_init(&main->clone_time, NULL);
 	while (++i < main->nb_philo)
 		pthread_mutex_init(&main->fork[i], NULL);
 	i = -1;

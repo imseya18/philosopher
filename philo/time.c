@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 15:59:41 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/08 16:57:24 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/08 18:42:36 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,11 @@ void	ft_usleep(int action_time, int eat, t_philo *philo)
 
 	start_time = time_for_usleep();
 	if (eat == 1)
+	{
+		pthread_mutex_lock(&philo->main->clone_time);
 		philo->last_time_eat = time_for_usleep();
+		pthread_mutex_unlock(&philo->main->clone_time);
+	}
 	while (time_for_usleep() - start_time < (unsigned int)action_time)
 		usleep(200);
 }
