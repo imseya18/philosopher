@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/08 18:42:34 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 13:20:25 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ void	init_philo(t_main	*main)
 	int	i;
 
 	i = -1;
-	main->philo = malloc(main->nb_philo * sizeof(pthread_t));
-	main->fork = malloc(main->nb_philo * sizeof(pthread_mutex_t));
+	main->philo = ftm_malloc(main->nb_philo * sizeof(pthread_t));
+	main->fork = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&main->to_print, NULL);
 	pthread_mutex_init(&main->alive, NULL);
 	pthread_mutex_init(&main->check_time_eat, NULL);
@@ -124,6 +124,7 @@ int	main(int argc, char **argv)
 		main.start_time = (main.start.tv_sec * 1000
 				+ main.start.tv_usec / 1000);
 		init_philo(&main);
+		ftm_free_all();
 		return (0);
 	}
 }

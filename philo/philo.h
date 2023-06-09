@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/08 18:42:35 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 13:20:19 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,14 @@ typedef struct s_main
 	struct timeval	end;
 }	t_main;
 
+typedef struct s_memng
+{
+	void			*mem;
+	int				type;
+	int				fd;
+	struct s_memng	*next;
+}	t_memng;
+
 int					init_variable(char **argv, t_main *main);
 int					ft_atoi(const char *str);
 int					check_if_digit(char *str);
@@ -58,10 +66,24 @@ void				philo_eating(t_philo *philo, t_main *main);
 int					check_number_eat(t_main *main);
 int					check_if_dead(t_main *main);
 void				*dead_routine(void	*philippe);
+
 //	TIME
-void				ft_print_case(t_main *main, int cases, int eat_number, int philo_nb, int fork_number);
-void				ft_print_case_two(t_main *main, int cases, int philo_nb, int fork_number);
-void				get_time_print_action(t_main *main, int cases, t_philo *philo, int fork_number);
+void				ft_print_case(t_main *main, int cases, int eat_number,
+						int philo_nb);
+void				ft_print_case_two(t_main *main, int cases, int philo_nb);
+void				get_time_print_action(t_main *main, int cases,
+						t_philo *philo);
 unsigned int		time_for_usleep(void);
 void				ft_usleep(int action_time, int eat, t_philo *philo);
+
+// MEMORY MANAGER
+t_memng				**ft_head_lst(void);
+t_memng				*ft_memnew_manager(void *mem, int type, int fd);
+void				ft_memadd_back_manager(t_memng **lst, t_memng *new);
+int					ft_is_in_lst(void *mem);
+void				*ftm_malloc(size_t sz);
+void				ftm_free(void *mem);
+void				ftm_free_all(void);
+void				ftm_add_track(void *mem);
+void				ftm_rm_track(void *mem);
 #endif

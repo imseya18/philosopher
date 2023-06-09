@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 15:59:41 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/08 18:42:36 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 12:39:26 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ void	ft_usleep(int action_time, int eat, t_philo *philo)
 		usleep(200);
 }
 
-void	ft_print_case(t_main *main, int cases, int eat_number, int philo_nb, int fork_number) //retirer fork number
+void	ft_print_case(t_main *main, int cases, int eat_number, int philo_nb)
 {
 	if (cases == 1 && main->stop == 0 && eat_number < main->number_eat)
-		printf("%ld %d has taken a fork %d\n", main->actual_time, (philo_nb + 1), (fork_number + 1));
+		printf("%ld %d has taken a fork %d\n", main->actual_time,
+			(philo_nb + 1));
 	else if (cases == 2 && main->stop == 0 && eat_number < main->number_eat)
 		printf("%ld %d is eating\n", main->actual_time, (philo_nb + 1));
 	else if (cases == 3 && main->stop == 0 && eat_number < main->number_eat)
@@ -51,10 +52,11 @@ void	ft_print_case(t_main *main, int cases, int eat_number, int philo_nb, int fo
 		printf("%ld %d died\n", main->actual_time, (philo_nb + 1));
 }
 
-void	ft_print_case_two(t_main *main, int cases, int philo_nb, int fork_number) //retirer fork number
+void	ft_print_case_two(t_main *main, int cases, int philo_nb)
 {
 	if (cases == 1 && main->stop == 0)
-		printf("%ld %d has taken a fork %d\n", main->actual_time, (philo_nb + 1), (fork_number + 1));
+		printf("%ld %d has taken a fork %d\n", main->actual_time,
+			(philo_nb + 1));
 	else if (cases == 2 && main->stop == 0)
 		printf("%ld %d is eating\n", main->actual_time, (philo_nb + 1));
 	else if (cases == 3 && main->stop == 0)
@@ -65,7 +67,7 @@ void	ft_print_case_two(t_main *main, int cases, int philo_nb, int fork_number) /
 		printf("%ld %d died\n", main->actual_time, (philo_nb + 1));
 }
 
-void	get_time_print_action(t_main *main, int cases, t_philo *philo, int fork_number) //retirer fork number
+void	get_time_print_action(t_main *main, int cases, t_philo *philo)
 {
 	long int	end_time;
 
@@ -76,9 +78,9 @@ void	get_time_print_action(t_main *main, int cases, t_philo *philo, int fork_num
 	end_time = (main->end.tv_sec * 1000 + main->end.tv_usec / 1000);
 	main->actual_time = (end_time - main->start_time);
 	if (main->number_eat != -1)
-		ft_print_case(main, cases, philo->eat_number, philo->philo_nb, fork_number);
+		ft_print_case(main, cases, philo->eat_number, philo->philo_nb);
 	else
-		ft_print_case_two(main, cases, philo->philo_nb, fork_number);
+		ft_print_case_two(main, cases, philo->philo_nb);
 	pthread_mutex_unlock(&main->alive);
 	pthread_mutex_unlock(&main->to_print);
 }

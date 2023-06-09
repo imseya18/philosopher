@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 14:15:19 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/08 18:42:37 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 12:53:10 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,11 @@ int	check_if_digit(char *str)
 		i++;
 	}
 	return (1);
+}
+
+void	add_time_they_eat(t_philo *philo, t_main *main)
+{
+	pthread_mutex_lock(&main->check_time_eat);
+	philo->eat_number++;
+	pthread_mutex_unlock(&main->check_time_eat);
 }

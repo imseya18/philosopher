@@ -3,7 +3,10 @@ NAME = philo
 SOURCES =   main.c\
 			utils.c\
 			time.c\
-			philo_routine.c
+			philo_routine.c \
+			memory_manager.c \
+			memory_manager_utils.c \
+			memory_manager_2.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
