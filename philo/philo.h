@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/09 13:20:19 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 13:43:40 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_main
 	int				number_eat;
 	long int		start_time;
 	long int		actual_time;
-	pthread_mutex_t	clone_time;
+	pthread_mutex_t	*clone_time;
 	pthread_mutex_t	check_time_eat;
 	pthread_mutex_t	to_print;
 	pthread_mutex_t	alive;
@@ -66,6 +66,7 @@ void				philo_eating(t_philo *philo, t_main *main);
 int					check_number_eat(t_main *main);
 int					check_if_dead(t_main *main);
 void				*dead_routine(void	*philippe);
+void				add_time_they_eat(t_philo *philo, t_main *main);
 
 //	TIME
 void				ft_print_case(t_main *main, int cases, int eat_number,

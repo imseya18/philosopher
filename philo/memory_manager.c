@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/17 19:39:10 by loculy            #+#    #+#             */
-/*   Updated: 2023/06/09 13:07:26 by mmorue           ###   ########.fr       */
+/*   Created: 2023/01/17 19:39:10 by mmorue            #+#    #+#             */
+/*   Updated: 2023/06/09 13:35:57 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	*ftm_malloc(size_t sz)
 
 	mem = malloc(sz);
 	if (!mem)
-		ft_error();
+		return (0);
 	mng = ft_head_lst();
 	new = ft_memnew_manager(mem, 0, 0);
 	ft_memadd_back_manager(mng, new);

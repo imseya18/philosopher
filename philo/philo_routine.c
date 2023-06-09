@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/09 12:53:12 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/09 13:49:06 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,9 @@ void	*dead_routine(void	*philippe)
 
 	philo = (t_philo *)philippe;
 	ft_usleep(philo->main->to_die, 0, NULL);
-	pthread_mutex_lock(&philo->main->clone_time);
+	pthread_mutex_lock(&philo->main->clone_time[philo->philo_nb]);
 	time = philo->last_time_eat;
-	pthread_mutex_unlock(&philo->main->clone_time);
+	pthread_mutex_unlock(&philo->main->clone_time[philo->philo_nb]);
 	if (time_for_usleep() - time >= (unsigned int)philo->main->to_die)
 	{
 		get_time_print_action(philo->main, 5, philo);
