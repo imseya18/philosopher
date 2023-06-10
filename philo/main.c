@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/09 14:01:24 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/10 15:47:24 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ void	ft_destructor(t_main *main)
 	int	i;
 
 	i = -1;
-	main = NULL;
 	while (++i < main->nb_philo)
 	{
 		pthread_mutex_destroy(&main->fork[i]);
@@ -84,7 +83,7 @@ void	init_philo(t_main	*main)
 	int	i;
 
 	i = -1;
-	main->philo = ftm_malloc(main->nb_philo * sizeof(pthread_t));
+	main->philo = ftm_malloc(main->nb_philo * sizeof(t_philo));
 	main->fork = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	main->clone_time = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&main->to_print, NULL);

@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/09 13:49:06 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/10 15:47:04 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	*thread_routine(void *philippe)
 			break ;
 		}
 		philo_sleep_think(philo, main);
-		pthread_detach(dead_or_not);
 	}
 	return (NULL);
 }
