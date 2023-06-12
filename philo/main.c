@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/10 15:52:08 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/12 14:28:32 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,31 @@ void	ft_destructor(t_main *main)
 	pthread_mutex_destroy(&main->check_time_eat);
 }
 
+void	*test_routine(void *philippe)
+{
+	t_main *main;
+	int		i;
+	
+	main = (t_main *) philippe;
+	while (1)
+	{
+		if (main->number_eat != -1)
+			if(check_number_eat(main) == 1)
+				break ;
+		i = -1;
+		while(++i < main->nb_philo)
+		{
+			pthread_mutex_lock(&main->clone_time[i]);
+			pthread_mutex_lock(&main->to_print);
+			printf(" la dernieres fois que philo %d a manger = %d\n", main->philo[i].philo_nb, time_for_usleep() - main->philo[i].last_time_eat);
+			pthread_mutex_unlock(&main->clone_time[i]);
+			pthread_mutex_unlock(&main->to_print);
+		}
+		usleep(200);
+	}
+	return (NULL);
+}
+
 void	init_philo(t_main	*main)
 {
 	int	i;
@@ -99,14 +124,16 @@ void	init_philo(t_main	*main)
 	{
 		main->philo[i].philo_nb = i;
 		main->philo[i].main = main;
-		main->philo[i].last_time_eat = 0;
+		main->philo[i].last_time_eat = time_for_usleep();
 		main->philo[i].eat_number = 0;
 		pthread_create(&main->philo[i].philo_th, NULL, thread_routine,
 			&main->philo[i]);
 	}
+	pthread_create(&main->main_th, NULL, test_routine, main);
 	i = -1;
 	while (++i < main->nb_philo)
 		pthread_join(main->philo[i].philo_th, NULL);
+	pthread_join(main->main_th, NULL);
 	ft_destructor(main);
 }
 

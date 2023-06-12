@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_routine.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/10 15:52:18 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/12 14:28:33 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,16 @@ void	*thread_routine(void *philippe)
 {
 	t_philo		*philo;
 	t_main		*main;
-	pthread_t	dead_or_not;
 
 	philo = (t_philo *)philippe;
 	main = philo->main;
 	if (philo->philo_nb % 2 != 0)
-		usleep(100);
+		usleep(main->to_eat);
 	while (check_if_dead(main) != 1)
 	{
-		pthread_create(&dead_or_not, NULL, dead_routine, philo);
 		philo_eating(philo, main);
 		if (check_if_dead(main) == 1)
-		{
-			pthread_detach(dead_or_not);
 			break ;
-		}
 		philo_sleep_think(philo, main);
 	}
 	return (NULL);
@@ -61,13 +56,13 @@ int	check_if_dead(t_main *main)
 	int	stoped;
 
 	stoped = 0;
-	pthread_mutex_lock(&main->alive);
-	stoped = main->stop;
-	pthread_mutex_unlock(&main->alive);
-	if (stoped == 1)
-		return (stoped);
-	if (main->number_eat != -1)
-		check_number_eat(main);
+	//pthread_mutex_lock(&main->alive);
+	//stoped = main->stop;
+	//pthread_mutex_unlock(&main->alive);
+	//if (stoped == 1)
+	//	return (stoped);
+	//if (main->number_eat != -1)
+	//	check_number_eat(main);
 	pthread_mutex_lock(&main->alive);
 	stoped = main->stop;
 	pthread_mutex_unlock(&main->alive);

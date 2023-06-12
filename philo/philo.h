@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
+/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/10 15:52:20 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/12 13:39:06 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_main
 	int				number_eat;
 	long int		start_time;
 	long int		actual_time;
+	pthread_t		main_th;
 	pthread_mutex_t	*clone_time;
 	pthread_mutex_t	check_time_eat;
 	pthread_mutex_t	to_print;
