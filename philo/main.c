@@ -6,7 +6,7 @@
 /*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/12 14:28:32 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/12 17:34:43 by seya             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,30 @@ void	ft_destructor(t_main *main)
 	pthread_mutex_destroy(&main->check_time_eat);
 }
 
+int		check_time_dead(t_main *main)
+{
+	int i;
+
+	i = -1;
+	while (++i < main->nb_philo)
+	{
+			pthread_mutex_lock(&main->clone_time[i]);
+			if((time_for_usleep() - main->philo[i].last_time_eat) >= (unsigned int)main->to_die)
+			{
+				get_time_print_action(main, 5, &main->philo[i]);
+				pthread_mutex_lock(&main->alive);
+				main->stop = 1;
+				pthread_mutex_unlock(&main->clone_time[i]);
+				pthread_mutex_unlock(&main->alive);
+				return (1);
+			}
+			pthread_mutex_unlock(&main->clone_time[i]);
+	}
+	return (0);
+}
 void	*test_routine(void *philippe)
 {
 	t_main *main;
-	int		i;
 	
 	main = (t_main *) philippe;
 	while (1)
@@ -89,16 +109,9 @@ void	*test_routine(void *philippe)
 		if (main->number_eat != -1)
 			if(check_number_eat(main) == 1)
 				break ;
-		i = -1;
-		while(++i < main->nb_philo)
-		{
-			pthread_mutex_lock(&main->clone_time[i]);
-			pthread_mutex_lock(&main->to_print);
-			printf(" la dernieres fois que philo %d a manger = %d\n", main->philo[i].philo_nb, time_for_usleep() - main->philo[i].last_time_eat);
-			pthread_mutex_unlock(&main->clone_time[i]);
-			pthread_mutex_unlock(&main->to_print);
-		}
-		usleep(200);
+		if (check_time_dead(main) == 1)
+			break ;
+		//usleep(2000);
 	}
 	return (NULL);
 }
