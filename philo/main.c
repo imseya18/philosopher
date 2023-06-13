@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/12 17:34:43 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/13 18:00:37 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,6 @@ int	init_variable(char **argv, t_main *main)
 	return (1);
 }
 
-int	check_number_eat(t_main *main)
-{
-	int	i;
-
-	i = 0;
-	while (i < main->nb_philo)
-	{
-		pthread_mutex_lock(&main->check_time_eat);
-		if (main->philo[i].eat_number < main->number_eat)
-		{
-			pthread_mutex_unlock(&main->check_time_eat);
-			return (0);
-		}
-		pthread_mutex_unlock(&main->check_time_eat);
-		i++;
-	}
-	pthread_mutex_lock(&main->alive);
-	main->stop = 1;
-	pthread_mutex_unlock(&main->alive);
-	return (1);
-}
-
 void	ft_destructor(t_main *main)
 {
 	int	i;
@@ -78,45 +56,7 @@ void	ft_destructor(t_main *main)
 	pthread_mutex_destroy(&main->check_time_eat);
 }
 
-int		check_time_dead(t_main *main)
-{
-	int i;
-
-	i = -1;
-	while (++i < main->nb_philo)
-	{
-			pthread_mutex_lock(&main->clone_time[i]);
-			if((time_for_usleep() - main->philo[i].last_time_eat) >= (unsigned int)main->to_die)
-			{
-				get_time_print_action(main, 5, &main->philo[i]);
-				pthread_mutex_lock(&main->alive);
-				main->stop = 1;
-				pthread_mutex_unlock(&main->clone_time[i]);
-				pthread_mutex_unlock(&main->alive);
-				return (1);
-			}
-			pthread_mutex_unlock(&main->clone_time[i]);
-	}
-	return (0);
-}
-void	*test_routine(void *philippe)
-{
-	t_main *main;
-	
-	main = (t_main *) philippe;
-	while (1)
-	{
-		if (main->number_eat != -1)
-			if(check_number_eat(main) == 1)
-				break ;
-		if (check_time_dead(main) == 1)
-			break ;
-		//usleep(2000);
-	}
-	return (NULL);
-}
-
-void	init_philo(t_main	*main)
+void	init_mutex(t_main	*main)
 {
 	int	i;
 
@@ -132,7 +72,14 @@ void	init_philo(t_main	*main)
 		pthread_mutex_init(&main->fork[i], NULL);
 		pthread_mutex_init(&main->clone_time[i], NULL);
 	}
+}
+
+void	init_philo(t_main	*main)
+{
+	int	i;
+
 	i = -1;
+	init_mutex(main);
 	while (++i < main->nb_philo)
 	{
 		main->philo[i].philo_nb = i;
@@ -142,7 +89,7 @@ void	init_philo(t_main	*main)
 		pthread_create(&main->philo[i].philo_th, NULL, thread_routine,
 			&main->philo[i]);
 	}
-	pthread_create(&main->main_th, NULL, test_routine, main);
+	pthread_create(&main->main_th, NULL, checker_routine, main);
 	i = -1;
 	while (++i < main->nb_philo)
 		pthread_join(main->philo[i].philo_th, NULL);

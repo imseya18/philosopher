@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/12 13:39:06 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/13 18:00:51 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,26 +57,36 @@ typedef struct s_memng
 	struct s_memng	*next;
 }	t_memng;
 
-int					init_variable(char **argv, t_main *main);
-int					ft_atoi(const char *str);
-int					check_if_digit(char *str);
+//CHECKER ROUTINE
+void				*checker_routine(void *philippe);
+int					check_number_eat(t_main *main);
+int					check_time_dead(t_main *main);
+
+//MAIN
+void				init_mutex(t_main	*main);
 void				init_philo(t_main	*main);
+void				ft_destructor(t_main *main);
+int					init_variable(char **argv, t_main *main);
+
+//PHILO ROUTINE
 void				*thread_routine(void *philippe);
+int					check_if_dead(t_main *main);
 void				philo_sleep_think(t_philo *philo, t_main *main);
 void				philo_eating(t_philo *philo, t_main *main);
-int					check_number_eat(t_main *main);
-int					check_if_dead(t_main *main);
-void				*dead_routine(void	*philippe);
-void				add_time_they_eat(t_philo *philo, t_main *main);
 
-//	TIME
+//TIME
+unsigned int		time_for_usleep(void);
+void				ft_usleep(int action_time, int eat, t_philo *philo);
 void				ft_print_case(t_main *main, int cases, int eat_number,
 						int philo_nb);
 void				ft_print_case_two(t_main *main, int cases, int philo_nb);
 void				get_time_print_action(t_main *main, int cases,
 						t_philo *philo);
-unsigned int		time_for_usleep(void);
-void				ft_usleep(int action_time, int eat, t_philo *philo);
+
+//UTILS
+int					ft_atoi(const char *str);
+int					check_if_digit(char *str);
+void				add_time_they_eat(t_philo *philo, t_main *main);
 
 // MEMORY MANAGER
 t_memng				**ft_head_lst(void);

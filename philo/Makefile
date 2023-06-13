@@ -6,7 +6,8 @@ SOURCES =  	memory_manager.c\
 			main.c\
 			utils.c\
 			time.c\
-			philo_routine.c
+			philo_routine.c\
+			checker_routine.c
 
 OBJECTS = $(SOURCES:.c=.o)
 

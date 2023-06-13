@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo_routine.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/12 16:09:27 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/13 18:00:50 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,10 @@ void	*thread_routine(void *philippe)
 	while (check_if_dead(main) != 1)
 	{
 		philo_eating(philo, main);
-		//if (check_if_dead(main) == 1)
-		//	break ;
 		philo_sleep_think(philo, main);
 	}
 	return (NULL);
 }
-
-//void	*dead_routine(void	*philippe)
-//{
-//	t_philo			*philo;
-//	unsigned int	time;
-//
-//	philo = (t_philo *)philippe;
-//	ft_usleep(philo->main->to_die, 0, NULL);
-//	pthread_mutex_lock(&philo->main->clone_time[philo->philo_nb]);
-//	time = philo->last_time_eat;
-//	pthread_mutex_unlock(&philo->main->clone_time[philo->philo_nb]);
-//	if (time_for_usleep() - time >= (unsigned int)philo->main->to_die)
-//	{
-//		get_time_print_action(philo->main, 5, philo);
-//		pthread_mutex_lock(&philo->main->alive);
-//		philo->main->stop = 1;
-//		pthread_mutex_unlock(&philo->main->alive);
-//	}
-//	return (NULL);
-//}
 
 int	check_if_dead(t_main *main)
 {

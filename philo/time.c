@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seya <seya@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 15:59:41 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/12 16:08:06 by seya             ###   ########.fr       */
+/*   Updated: 2023/06/13 18:00:51 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	ft_usleep(int action_time, int eat, t_philo *philo)
 		pthread_mutex_lock(&philo->main->clone_time[philo->philo_nb]);
 		philo->last_time_eat = time_for_usleep();
 		pthread_mutex_unlock(&philo->main->clone_time[philo->philo_nb]);
-
 	}
 	while (time_for_usleep() - start_time < (unsigned int)action_time)
 		usleep(200);
@@ -58,7 +57,7 @@ void	ft_print_case_two(t_main *main, int cases, int philo_nb)
 	if (cases == 1)
 		printf("%ld %d has taken a fork\n", main->actual_time,
 			(philo_nb + 1));
-	else if (cases == 2 )
+	else if (cases == 2)
 		printf("%ld %d is eating\n", main->actual_time, (philo_nb + 1));
 	else if (cases == 3)
 		printf("%ld %d is sleeping\n", main->actual_time, (philo_nb + 1));
