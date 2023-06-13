@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/13 18:00:50 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/13 18:10:46 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ void	*thread_routine(void *philippe)
 
 	philo = (t_philo *)philippe;
 	main = philo->main;
+	if (main->nb_philo == 1)
+	{
+		get_time_print_action(main, 1, philo);
+		return (NULL);
+	}
 	if (philo->philo_nb % 2 == 0)
 		usleep(main->to_eat);
 	while (check_if_dead(main) != 1)
