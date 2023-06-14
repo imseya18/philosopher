@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 14:15:19 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/13 18:10:47 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 14:36:14 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,31 @@ void	add_time_they_eat(t_philo *philo, t_main *main)
 	pthread_mutex_lock(&main->check_time_eat);
 	philo->eat_number++;
 	pthread_mutex_unlock(&main->check_time_eat);
+}
+
+int	destroy_mutex_problem(t_main *main, int i, int cases)
+{
+	int	k;
+
+	k = -1;
+	if (cases <= 4)
+		pthread_mutex_destroy(&main->to_print);
+	if (cases >= 2 && cases <= 4)
+		pthread_mutex_destroy(&main->alive);
+	if (cases == 3)
+	{
+		pthread_mutex_destroy(&main->check_time_eat);
+		while (++k < i)
+			pthread_mutex_destroy(&main->fork[k]);
+	}
+	if (cases == 4)
+	{
+		pthread_mutex_destroy(&main->check_time_eat);
+		while (++k < main->nb_philo)
+			pthread_mutex_destroy(&main->fork[k]);
+		k = -1;
+		while (++k < i)
+			pthread_mutex_destroy(&main->clone_time[i]);
+	}
+	return (1);
 }

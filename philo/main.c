@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/13 18:00:37 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 14:48:17 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	ft_destructor(t_main *main)
 	pthread_mutex_destroy(&main->check_time_eat);
 }
 
-void	init_mutex(t_main	*main)
+int	init_mutex(t_main	*main)
 {
 	int	i;
 
@@ -64,37 +64,47 @@ void	init_mutex(t_main	*main)
 	main->philo = ftm_malloc(main->nb_philo * sizeof(t_philo));
 	main->fork = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	main->clone_time = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
-	pthread_mutex_init(&main->to_print, NULL);
-	pthread_mutex_init(&main->alive, NULL);
-	pthread_mutex_init(&main->check_time_eat, NULL);
+	if (pthread_mutex_init(&main->to_print, NULL))
+		return (1);
+	if (pthread_mutex_init(&main->alive, NULL))
+		return (destroy_mutex_problem(main, 0, 1));
+	if (pthread_mutex_init(&main->check_time_eat, NULL))
+		return (destroy_mutex_problem(main, 0, 2));
 	while (++i < main->nb_philo)
-	{
-		pthread_mutex_init(&main->fork[i], NULL);
-		pthread_mutex_init(&main->clone_time[i], NULL);
-	}
+		if (pthread_mutex_init(&main->fork[i], NULL))
+			return (destroy_mutex_problem(main, i, 3));
+	i = -1;
+	while (++i < main->nb_philo)
+		if (pthread_mutex_init(&main->clone_time[i], NULL))
+			return (destroy_mutex_problem(main, i, 4));
+	return (0);
 }
 
-void	init_philo(t_main	*main)
+int	init_philo(t_main	*main)
 {
 	int	i;
 
 	i = -1;
-	init_mutex(main);
+	if (init_mutex(main))
+		return (1);
 	while (++i < main->nb_philo)
 	{
 		main->philo[i].philo_nb = i;
 		main->philo[i].main = main;
 		main->philo[i].last_time_eat = time_for_usleep();
 		main->philo[i].eat_number = 0;
-		pthread_create(&main->philo[i].philo_th, NULL, thread_routine,
-			&main->philo[i]);
+		if (pthread_create(&main->philo[i].philo_th, NULL, thread_routine,
+				&main->philo[i]))
+			return (philo_fail(main, i));
 	}
-	pthread_create(&main->main_th, NULL, checker_routine, main);
+	if (pthread_create(&main->main_th, NULL, checker_routine, main))
+		return (philo_fail(main, i));
 	i = -1;
 	while (++i < main->nb_philo)
 		pthread_join(main->philo[i].philo_th, NULL);
 	pthread_join(main->main_th, NULL);
 	ft_destructor(main);
+	return (0);
 }
 
 int	main(int argc, char **argv)
@@ -115,7 +125,8 @@ int	main(int argc, char **argv)
 		gettimeofday(&(main.start), NULL);
 		main.start_time = (main.start.tv_sec * 1000
 				+ main.start.tv_usec / 1000);
-		init_philo(&main);
+		if (init_philo(&main))
+			printf("not enough memory\n");
 		ftm_free_all();
 		return (0);
 	}

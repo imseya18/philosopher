@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/13 18:10:46 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 14:47:53 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,22 @@ void	philo_eating(t_philo *philo, t_main *main)
 		pthread_mutex_unlock(&main->fork[(philo->philo_nb - 1)]);
 		pthread_mutex_unlock(&main->fork[philo->philo_nb]);
 	}
+}
+
+int	philo_fail(t_main *main, int i)
+{
+	int	k;
+
+	k = -1;
+	while (++k < i)
+	{
+		if (k == 0)
+		{
+			pthread_mutex_lock(&main->alive);
+			main->stop = 1;
+			pthread_mutex_unlock(&main->alive);
+		}
+		pthread_join(main->philo[i].philo_th, NULL);
+	}
+	return (1);
 }

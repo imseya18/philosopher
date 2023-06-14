@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:31:53 by seya              #+#    #+#             */
-/*   Updated: 2023/06/13 18:00:51 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 14:47:37 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ int					check_number_eat(t_main *main);
 int					check_time_dead(t_main *main);
 
 //MAIN
-void				init_mutex(t_main	*main);
-void				init_philo(t_main	*main);
+int					init_mutex(t_main	*main);
+int					init_philo(t_main	*main);
 void				ft_destructor(t_main *main);
 int					init_variable(char **argv, t_main *main);
 
@@ -73,6 +73,7 @@ void				*thread_routine(void *philippe);
 int					check_if_dead(t_main *main);
 void				philo_sleep_think(t_philo *philo, t_main *main);
 void				philo_eating(t_philo *philo, t_main *main);
+int					philo_fail(t_main *main, int i);
 
 //TIME
 unsigned int		time_for_usleep(void);
@@ -87,6 +88,7 @@ void				get_time_print_action(t_main *main, int cases,
 int					ft_atoi(const char *str);
 int					check_if_digit(char *str);
 void				add_time_they_eat(t_philo *philo, t_main *main);
+int					destroy_mutex_problem(t_main *main, int i, int cases);
 
 // MEMORY MANAGER
 t_memng				**ft_head_lst(void);
