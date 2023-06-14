@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/13 17:49:24 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/13 18:07:13 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 16:11:00 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	*checker_routine(void *philippe)
 				break ;
 		if (check_time_dead(main) == 1)
 			break ;
+		usleep(200);
 	}
 	return (NULL);
 }

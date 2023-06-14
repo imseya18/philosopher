@@ -11,7 +11,7 @@ SOURCES =  	memory_manager.c\
 
 OBJECTS = $(SOURCES:.c=.o)
 
-FLAGS = -Wall -Wextra -Werror -pthread -g -fsanitize=thread
+FLAGS = -Wall -Wextra -Werror
 
 CC = gcc $(FLAGS)
 

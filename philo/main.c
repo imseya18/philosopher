@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 00:30:29 by seya              #+#    #+#             */
-/*   Updated: 2023/06/14 14:48:17 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 15:56:27 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ int	init_mutex(t_main	*main)
 	main->philo = ftm_malloc(main->nb_philo * sizeof(t_philo));
 	main->fork = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
 	main->clone_time = ftm_malloc(main->nb_philo * sizeof(pthread_mutex_t));
+	if (!main->philo || !main->fork || !main->clone_time)
+		return (1);
 	if (pthread_mutex_init(&main->to_print, NULL))
 		return (1);
 	if (pthread_mutex_init(&main->alive, NULL))

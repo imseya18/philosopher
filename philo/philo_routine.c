@@ -6,7 +6,7 @@
 /*   By: mmorue <mmorue@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 15:29:57 by mmorue            #+#    #+#             */
-/*   Updated: 2023/06/14 14:47:53 by mmorue           ###   ########.fr       */
+/*   Updated: 2023/06/14 15:56:34 by mmorue           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*thread_routine(void *philippe)
 		return (NULL);
 	}
 	if (philo->philo_nb % 2 == 0)
-		usleep(main->to_eat);
+		ft_usleep(main->to_eat, 0, NULL);
 	while (check_if_dead(main) != 1)
 	{
 		philo_eating(philo, main);
